@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Instructions - Eagles Membership System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+            color: #fff;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.05);
+            padding: 40px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            color: #d4af37;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+        h2 {
+            color: #d4af37;
+            margin: 30px 0 15px;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #d4af37;
+            padding-bottom: 10px;
+        }
+        h3 {
+            color: #d4af37;
+            margin: 20px 0 10px;
+            font-size: 1.3rem;
+        }
+        .step {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #d4af37;
+        }
+        .step-number {
+            display: inline-block;
+            background: #d4af37;
+            color: #1a1a1a;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        code {
+            background: rgba(0,0,0,0.5);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #d4af37;
+            font-family: 'Courier New', monospace;
+        }
+        .code-block {
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        .code-block code {
+            background: transparent;
+            padding: 0;
+            display: block;
+            white-space: pre;
+        }
+        .warning {
+            background: rgba(245, 158, 11, 0.2);
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .success {
+            background: rgba(16, 185, 129, 0.2);
+            border-left: 4px solid #10b981;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .info {
+            background: rgba(37, 99, 235, 0.2);
+            border-left: 4px solid #2563eb;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        a {
+            color: #d4af37;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .btn {
+            display: inline-block;
+            background: #d4af37;
+            color: #1a1a1a;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 10px 5px;
+            transition: transform 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+        .checklist li {
+            padding: 10px 0;
+            position: relative;
+            padding-left: 30px;
+        }
+        .checklist li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo img {
+            max-width: 150px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="logo.png" alt="Eagles Logo">
+        </div>
+        
+        <h1>🦅 Setup Instructions</h1>
+        
+        <div class="success">
+            <strong>Welcome to the Philippine Eagles Membership System!</strong><br>
+            Follow these steps to get your application up and running.
+        </div>
+
+        <h2>Quick Start</h2>
+        
+        <div class="step">
+            <h3><span class="step-number">1</span>Prerequisites</h3>
+            <p>Make sure you have these installed:</p>
+            <ul class="checklist">
+                <li>Node.js (v16 or higher) - <a href="https://nodejs.org/" target="_blank">Download here</a></li>
+                <li>Git - <a href="https://git-scm.com/" target="_blank">Download here</a></li>
+                <li>A Firebase account (free) - <a href="https://firebase.google.com/" target="_blank">Create here</a></li>
+                <li>A Vercel account (free) - <a href="https://vercel.com/" target="_blank">Sign up here</a></li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">2</span>Install Dependencies</h3>
+            <p>Open terminal in the project folder and run:</p>
+            <div class="code-block">
+                <code>npm install</code>
+            </div>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">3</span>Set Up Firebase</h3>
+            <p>Create a Firebase project and configure it:</p>
+            <ol>
+                <li>Go to <a href="https://console.firebase.google.com/" target="_blank">Firebase Console</a></li>
+                <li>Create a new project</li>
+                <li>Enable these services:
+                    <ul>
+                        <li>✓ Firestore Database</li>
+                        <li>✓ Authentication (Email/Password)</li>
+                        <li>✓ Storage</li>
+                    </ul>
+                </li>
+                <li>Get your Firebase configuration</li>
+                <li>Create an admin user in Authentication</li>
+            </ol>
+            <div class="info">
+                📖 <strong>Detailed Instructions:</strong> See <a href="FIREBASE_SETUP.md" target="_blank">FIREBASE_SETUP.md</a> for step-by-step guide with screenshots.
+            </div>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">4</span>Configure Firebase in Your App</h3>
+            <p>Open <code>app.js</code> and replace the Firebase configuration (around line 23):</p>
+            <div class="code-block">
+                <code>const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};</code>
+            </div>
+            <div class="warning">
+                ⚠️ <strong>Important:</strong> Replace ALL placeholder values with your actual Firebase credentials!
+            </div>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">5</span>Run Locally</h3>
+            <p>Start the development server:</p>
+            <div class="code-block">
+                <code>npm run dev</code>
+            </div>
+            <p>Open your browser to: <a href="http://localhost:5173" target="_blank">http://localhost:5173</a></p>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">6</span>Test the Application</h3>
+            <ul class="checklist">
+                <li>Submit a test membership application</li>
+                <li>Check if data appears in Firestore</li>
+                <li>Verify photos are uploaded to Storage</li>
+                <li>Login to admin panel with your credentials</li>
+                <li>View, edit, and delete test applications</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">7</span>Deploy to Vercel</h3>
+            <p>Deploy your application to the internet:</p>
+            <div class="code-block">
+                <code>npm i -g vercel
+vercel login
+vercel --prod</code>
+            </div>
+            <p>Your app will be live at: <code>https://your-app-name.vercel.app</code></p>
+            <div class="info">
+                📖 <strong>Detailed Instructions:</strong> See <a href="DEPLOYMENT.md" target="_blank">DEPLOYMENT.md</a> for full deployment guide.
+            </div>
+        </div>
+
+        <h2>Important Files</h2>
+        <div class="step">
+            <ul>
+                <li><strong>app.js</strong> - Main application code (update Firebase config here)</li>
+                <li><strong>index.html</strong> - Main page</li>
+                <li><strong>styles.css</strong> - Styling</li>
+                <li><strong>manifest.json</strong> - PWA configuration</li>
+                <li><strong>sw.js</strong> - Service worker for offline support</li>
+            </ul>
+        </div>
+
+        <h2>Admin Credentials</h2>
+        <div class="warning">
+            <strong>⚠️ Default Admin Setup:</strong><br>
+            You need to create an admin account in Firebase Authentication.<br>
+            <ol>
+                <li>Go to Firebase Console → Authentication → Users</li>
+                <li>Click "Add user"</li>
+                <li>Enter email and password</li>
+                <li>Use these credentials to login to the admin panel</li>
+            </ol>
+        </div>
+
+        <h2>Features Overview</h2>
+        <div class="step">
+            <h3>For Members:</h3>
+            <ul class="checklist">
+                <li>Apply for membership online</li>
+                <li>Apply for ID card</li>
+                <li>Upload 2x2 photos</li>
+                <li>Digital signature support</li>
+                <li>Mobile-responsive design</li>
+                <li>Install as PWA on mobile/desktop</li>
+            </ul>
+
+            <h3>For Administrators:</h3>
+            <ul class="checklist">
+                <li>Secure login with Firebase Auth</li>
+                <li>View all applications</li>
+                <li>Edit application details</li>
+                <li>Delete applications</li>
+                <li>Change admin password</li>
+                <li>Real-time data sync</li>
+            </ul>
+        </div>
+
+        <h2>Need Help?</h2>
+        <div class="info">
+            <strong>📚 Documentation:</strong>
+            <ul>
+                <li><a href="README.md">README.md</a> - Complete documentation</li>
+                <li><a href="FIREBASE_SETUP.md">FIREBASE_SETUP.md</a> - Firebase setup guide</li>
+                <li><a href="DEPLOYMENT.md">DEPLOYMENT.md</a> - Deployment instructions</li>
+            </ul>
+
+            <strong>🔧 Troubleshooting:</strong>
+            <ul>
+                <li>Check browser console for errors (F12)</li>
+                <li>Verify Firebase configuration is correct</li>
+                <li>Ensure all Firebase services are enabled</li>
+                <li>Check Firebase Console for error logs</li>
+            </ul>
+        </div>
+
+        <div class="success" style="text-align: center; margin-top: 40px;">
+            <h3>Ready to Start?</h3>
+            <p>Once you've completed the setup, you can access:</p>
+            <a href="index.html" class="btn">🦅 Open Application</a>
+            <a href="index.html#admin" class="btn">👨‍💼 Admin Panel</a>
+        </div>
+
+        <div style="text-align: center; margin-top: 50px; padding-top: 30px; border-top: 1px solid rgba(212, 175, 55, 0.3);">
+            <p style="color: #d4af37; font-size: 1.2rem; margin-bottom: 10px;">
+                <strong>THE FRATERNAL ORDER OF EAGLES</strong><br>
+                (Philippine Eagles)
+            </p>
+            <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">
+                Service Through Strong Brotherhood<br>
+                "ANG MALAYANG AGILA"<br>
+                <em>Deo et Patria</em>
+            </p>
+            <p style="margin-top: 20px; font-size: 0.85rem; color: rgba(255,255,255,0.5);">
+                © 2024 Godmisoft. Developed by <strong>Godmisoft - Hebz</strong>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
