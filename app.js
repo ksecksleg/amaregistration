@@ -990,30 +990,12 @@ async function showFormattedView(type, id) {
                         color: #000;
                         max-width: 800px;
                         margin: 0 auto;
-                    }
-                    .pdf-header-row {
-                        display: flex;
-                        align-items: center;
-                        justify-content: space-between;
-                        margin-bottom: 10px;
-                    }
-                    .pdf-header-center {
-                        text-align: center;
-                        flex: 1;
-                    }
-                    .pdf-header-center h2 {
-                        font-size: 14px;
-                        margin: 2px 0;
-                        font-weight: bold;
-                    }
-                    .pdf-header-center p {
-                        font-size: 10px;
-                        margin: 1px 0;
+                        position: relative;
                     }
                     .pdf-photo-box {
                         position: absolute;
                         right: 40px;
-                        top: 200px;
+                        top: 160px;
                         width: 100px;
                         height: 100px;
                         border: 2px solid #000;
@@ -1023,35 +1005,17 @@ async function showFormattedView(type, id) {
                         font-size: 11px;
                         margin-top: 20px;
                     }
-                    .pdf-table strong {
-                        font-weight: bold;
-                    }
                     .underline {
                         border-bottom: 1px solid #000;
                         display: inline-block;
                         min-width: 300px;
                         padding-bottom: 2px;
                     }
-                    .section-header {
-                        border-bottom: 2px solid #000;
-                        padding: 8px 0;
-                        text-align: center;
-                        font-weight: bold;
-                        font-size: 11px;
-                    }
                 </style>
                 <div class="pdf-view">
-                    <!-- Header with logos -->
-                    <div class="pdf-header-row">
-                        <img src="philippine-flag.svg" alt="Philippine Flag" style="width: 60px; height: 30px;">
-                        <div class="pdf-header-center">
-                            <h2>THE FRATERNAL ORDER OF <em>Eagles</em></h2>
-                            <h2 style="font-size: 13px;">( Philippine <em>Eagles</em> )</h2>
-                            <p style="font-size: 9px;">First Philippine-Born Socio-Civic Organization</p>
-                            <p style="color: #d4af37; font-style: italic; font-weight: bold; font-size: 10px;">Service Through Strong Brotherhood</p>
-                            <p style="font-style: italic; font-weight: bold; font-size: 11px;">"ANG MALAYANG AGILA"</p>
-                        </div>
-                        <img src="logo.png" alt="Eagles Logo" style="width: 60px; height: 60px;">
+                    <!-- Header Image -->
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <img src="headama.jpg" alt="Eagles Header" style="max-width: 100%; height: auto;">
                     </div>
 
                     <h3 style="text-align: center; text-decoration: underline; margin: 20px 0; font-size: 14px;">APPLICATION OF MEMBERSHIP</h3>
@@ -1068,8 +1032,8 @@ async function showFormattedView(type, id) {
                     </p>
 
                     <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #000; padding: 8px 0; margin-top: 20px;">
-                        <div class="section-header" style="flex: 1; border: none;"><strong>Name of Eagles Club</strong></div>
-                        <div class="section-header" style="flex: 1; border: none; border-left: 2px solid #000;"><strong>Applicant's Name & Signature</strong></div>
+                        <div style="flex: 1; text-align: center; font-weight: bold; font-size: 11px;">Name of Eagles Club</div>
+                        <div style="flex: 1; text-align: center; font-weight: bold; font-size: 11px; border-left: 2px solid #000;">Applicant's Name & Signature</div>
                     </div>
 
                     <div class="pdf-table">
@@ -1102,29 +1066,24 @@ async function showFormattedView(type, id) {
         } else {
             // ID APPLICATION FORMAT
             modalBody.innerHTML = `
-                <div class="pdf-view">
-                    <div class="pdf-header">
-                        <img src="/logo.png" alt="Philippine Flag" style="width: 80px; float: left; margin-right: 20px;">
-                        <div style="text-align: center; padding-top: 10px;">
-                            <h2 style="color: #d4af37; margin: 0;">THE FRATERNAL ORDER OF <em>Eagles</em></h2>
-                            <h3 style="margin: 5px 0;">(Philippine <em>Eagles</em>)</h3>
-                            <p style="margin: 3px 0; font-size: 0.9em;">First Philippine-Born Socio-Civic Organization</p>
-                            <p style="margin: 3px 0; color: #d4af37; font-style: italic;"><strong>Service Through Strong Brotherhood</strong></p>
-                            <p style="margin: 3px 0; font-size: 1.1em; font-style: italic;"><strong>"ANG MALAYANG AGILA"</strong></p>
-                        </div>
-                        <img src="/logo.png" alt="Eagles Logo" style="width: 80px; float: right; margin-left: 20px;">
-                        <div style="clear: both;"></div>
+                <div class="pdf-view" style="position: relative;">
+                    <!-- Header Image -->
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <img src="headama.jpg" alt="Eagles Header" style="max-width: 100%; height: auto;">
                     </div>
                     
                     <hr style="border: 1px dashed #000; margin: 20px 0;">
                     
-                    <h3 style="text-align: center; margin: 20px 0;">APPLICATION FOR IDENTIFICATION CARD</h3>
+                    <h3 style="text-align: center; margin: 20px 0; font-size: 16px; font-weight: bold;">APPLICATION FOR IDENTIFICATION CARD</h3>
                     
-                    <div class="pdf-photo" style="float: right; width: 120px; height: 120px; border: 2px solid #000; margin: 0 0 10px 10px;">
-                        <img src="${data.photoURL}" alt="2x2 picture" style="width: 100%; height: 100%; object-fit: cover;">
+                    <!-- Photo - centered above table -->
+                    <div style="text-align: center; margin: 20px 0;">
+                        <div style="display: inline-block; width: 100px; height: 100px; border: 2px solid #000;">
+                            <img src="${data.photoURL}" alt="2x2 picture" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
                     </div>
                     
-                    <table class="pdf-table" style="width: 100%; border: 2px solid #000; border-collapse: collapse; margin-top: 20px;">
+                    <table style="width: 100%; border: 2px solid #000; border-collapse: collapse; margin-top: 20px; font-size: 11px;">
                         <tr>
                             <td colspan="2" style="border: 1px solid #000; padding: 10px; text-align: center; background: #f0f0f0;">
                                 <strong>Name of Club</strong>
@@ -1141,7 +1100,7 @@ async function showFormattedView(type, id) {
                             </td>
                         </tr>
                         <tr>
-                            <td style="border: 1px solid #000; padding: 10px;"><strong>Given Name</strong></td>
+                            <td style="border: 1px solid #000; padding: 10px; width: 30%;"><strong>Given Name</strong></td>
                             <td style="border: 1px solid #000; padding: 10px;">${data.givenName || ''}</td>
                         </tr>
                         <tr>
@@ -1161,7 +1120,7 @@ async function showFormattedView(type, id) {
                             <td style="border: 1px solid #000; padding: 10px;">${data.dateOfBirth || ''}</td>
                         </tr>
                         <tr>
-                            <td style="border: 1px solid #000; padding: 10px;"><strong>Contact Person</strong><br>(in case of emergency)</td>
+                            <td style="border: 1px solid #000; padding: 10px;"><strong>Contact Person</strong><br><span style="font-size: 9px;">(in case of emergency)</span></td>
                             <td style="border: 1px solid #000; padding: 10px;">${data.contactPerson || ''}</td>
                         </tr>
                         <tr>
@@ -1169,7 +1128,7 @@ async function showFormattedView(type, id) {
                             <td style="border: 1px solid #000; padding: 10px;">${data.contactNumber || ''}</td>
                         </tr>
                         <tr>
-                            <td style="border: 1px solid #000; padding: 10px;"><strong>Member's Signature</strong><br>(Please sign inside the box)</td>
+                            <td style="border: 1px solid #000; padding: 10px;"><strong>Member's Signature</strong><br><span style="font-size: 9px;">(Please sign inside the box)</span></td>
                             <td style="border: 1px solid #000; padding: 10px; height: 150px; vertical-align: middle; text-align: center;">
                                 <img src="${data.signatureURL}" alt="Signature" style="max-width: 250px; max-height: 130px; background: white;">
                             </td>
