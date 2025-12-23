@@ -24,7 +24,7 @@ import {
 // Firebase configuration
 // IMPORTANT: Replace these with your actual Firebase project credentials
 const firebaseConfig = {
-    apiKey: "AIzaSyB1b2qUxwE6gZJd0XsfWTShrJkp1pqURMw",
+     apiKey: "AIzaSyB1b2qUxwE6gZJd0XsfWTShrJkp1pqURMw",
   authDomain: "amaregistration.firebaseapp.com",
   projectId: "amaregistration",
   storageBucket: "amaregistration.firebasestorage.app",
@@ -611,25 +611,8 @@ async function loadIDApplications() {
 
 // View application
 window.viewApplication = async function(type, id) {
-                </div>
-                <div class="detail-item" style="margin-top: 20px;">
-                    <div class="detail-label">Complete Address</div>
-                    <div class="detail-value">${data.completeAddress}</div>
-                </div>
-                <div class="detail-signature">
-                    <div class="detail-label">Signature</div>
-                    <img src="${data.signatureURL}" alt="Signature">
-                </div>
-            `;
-        }
-
-        document.getElementById('modal-overlay').classList.add('active');
-        document.getElementById('view-modal').classList.add('active');
-
-    } catch (error) {
-        console.error('Error viewing application:', error);
-        showToast('Error viewing application', 'error');
-    }
+    // Use the new formatted view
+    await showFormattedView(type, id);
 };
 
 // Edit application
