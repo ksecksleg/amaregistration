@@ -24,12 +24,12 @@ import {
 // Firebase configuration
 // IMPORTANT: Replace these with your actual Firebase project credentials
 const firebaseConfig = {
-   apiKey: "AIzaSyB1b2qUxwE6gZJd0XsfWTShrJkp1pqURMw",
-  authDomain: "amaregistration.firebaseapp.com",
-  projectId: "amaregistration",
-  storageBucket: "amaregistration.firebasestorage.app",
-  messagingSenderId: "609915541222",
-  appId: "1:609915541222:web:6c04eb592ab1d43dcf4d27"
+    apiKey: "YOUR_API_KEY_HERE",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
 };
 
 // Initialize Firebase
@@ -237,6 +237,56 @@ async function fileToBase64(file) {
     });
 }
 
+// Compress image to fit Firestore 1MB limit
+async function compressImage(file, maxSizeKB = 800) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+                
+                // Resize if too large
+                const maxDimension = 800;
+                if (width > maxDimension || height > maxDimension) {
+                    if (width > height) {
+                        height = (height / width) * maxDimension;
+                        width = maxDimension;
+                    } else {
+                        width = (width / height) * maxDimension;
+                        height = maxDimension;
+                    }
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                // Start with quality 0.7 and reduce if needed
+                let quality = 0.7;
+                let base64 = canvas.toDataURL('image/jpeg', quality);
+                
+                // Keep reducing quality until under size limit
+                while (base64.length > maxSizeKB * 1024 && quality > 0.1) {
+                    quality -= 0.1;
+                    base64 = canvas.toDataURL('image/jpeg', quality);
+                }
+                
+                console.log(`Compressed image: ${(base64.length / 1024).toFixed(2)}KB, quality: ${quality}`);
+                resolve(base64);
+            };
+            img.onerror = reject;
+            img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
 // Submit Membership Application
 async function submitMembershipApplication() {
     try {
@@ -264,11 +314,13 @@ async function submitMembershipApplication() {
             return;
         }
 
-        // Convert photo to base64
-        const photoBase64 = await fileToBase64(photoFile);
+        // Compress and convert photo to base64 (max 800KB to fit Firestore limit)
+        showToast('Compressing photo...', 'info');
+        const photoBase64 = await compressImage(photoFile, 700);
 
-        // Convert signature to base64
-        const signatureBase64 = membershipSignaturePad.toDataURL();
+        // Convert signature to base64 (compress to 100KB)
+        const signatureCanvas = document.getElementById('signature-pad-membership');
+        const signatureBase64 = signatureCanvas.toDataURL('image/jpeg', 0.7);
 
         // Prepare data
         const applicationData = {
@@ -314,7 +366,17 @@ async function submitMembershipApplication() {
 
     } catch (error) {
         console.error('Error submitting application:', error);
-        showToast('Error submitting application. Please try again.', 'error');
+        
+        let errorMessage = 'Error submitting application. ';
+        if (error.message && error.message.includes('longer than')) {
+            errorMessage = 'Data too large. Try a smaller photo or compress it first.';
+        } else if (error.code === 'permission-denied') {
+            errorMessage = 'Permission denied. Check Firestore security rules.';
+        } else {
+            errorMessage += error.message || 'Please try again.';
+        }
+        
+        showToast(errorMessage, 'error');
     }
 }
 
@@ -345,11 +407,13 @@ async function submitIDApplication() {
             return;
         }
 
-        // Convert photo to base64
-        const photoBase64 = await fileToBase64(photoFile);
+        // Compress and convert photo to base64 (max 700KB to fit Firestore limit)
+        showToast('Compressing photo...', 'info');
+        const photoBase64 = await compressImage(photoFile, 700);
 
-        // Convert signature to base64
-        const signatureBase64 = idSignaturePad.toDataURL();
+        // Convert signature to base64 (compress to save space)
+        const signatureCanvas = document.getElementById('signature-pad-id');
+        const signatureBase64 = signatureCanvas.toDataURL('image/jpeg', 0.7);
 
         // Prepare data
         const applicationData = {
@@ -378,7 +442,17 @@ async function submitIDApplication() {
 
     } catch (error) {
         console.error('Error submitting application:', error);
-        showToast('Error submitting application. Please try again.', 'error');
+        
+        let errorMessage = 'Error submitting application. ';
+        if (error.message && error.message.includes('longer than')) {
+            errorMessage = 'Data too large. Try a smaller photo or compress it first.';
+        } else if (error.code === 'permission-denied') {
+            errorMessage = 'Permission denied. Check Firestore security rules.';
+        } else {
+            errorMessage += error.message || 'Please try again.';
+        }
+        
+        showToast(errorMessage, 'error');
     }
 }
 
