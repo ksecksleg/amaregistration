@@ -24,7 +24,7 @@ import {
 // Firebase configuration
 // IMPORTANT: Replace these with your actual Firebase project credentials
 const firebaseConfig = {
-     apiKey: "AIzaSyB1b2qUxwE6gZJd0XsfWTShrJkp1pqURMw",
+    apiKey: "AIzaSyB1b2qUxwE6gZJd0XsfWTShrJkp1pqURMw",
   authDomain: "amaregistration.firebaseapp.com",
   projectId: "amaregistration",
   storageBucket: "amaregistration.firebasestorage.app",
@@ -976,101 +976,126 @@ async function showFormattedView(type, id) {
         const modalBody = document.getElementById('view-modal-body');
 
         if (type === 'membership') {
+            // MEMBERSHIP APPLICATION - EXACT PDF FORMAT
             modalBody.innerHTML = `
+                <style>
+                    @media print {
+                        .modal-actions { display: none !important; }
+                        .pdf-view { padding: 20px; }
+                    }
+                    .pdf-view {
+                        background: white;
+                        padding: 40px;
+                        font-family: Arial, sans-serif;
+                        color: #000;
+                        max-width: 800px;
+                        margin: 0 auto;
+                    }
+                    .pdf-header-row {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        margin-bottom: 10px;
+                    }
+                    .pdf-header-center {
+                        text-align: center;
+                        flex: 1;
+                    }
+                    .pdf-header-center h2 {
+                        font-size: 14px;
+                        margin: 2px 0;
+                        font-weight: bold;
+                    }
+                    .pdf-header-center p {
+                        font-size: 10px;
+                        margin: 1px 0;
+                    }
+                    .pdf-photo-box {
+                        position: absolute;
+                        right: 40px;
+                        top: 200px;
+                        width: 100px;
+                        height: 100px;
+                        border: 2px solid #000;
+                    }
+                    .pdf-table {
+                        width: 100%;
+                        font-size: 11px;
+                        margin-top: 20px;
+                    }
+                    .pdf-table strong {
+                        font-weight: bold;
+                    }
+                    .underline {
+                        border-bottom: 1px solid #000;
+                        display: inline-block;
+                        min-width: 300px;
+                        padding-bottom: 2px;
+                    }
+                    .section-header {
+                        border-bottom: 2px solid #000;
+                        padding: 8px 0;
+                        text-align: center;
+                        font-weight: bold;
+                        font-size: 11px;
+                    }
+                </style>
                 <div class="pdf-view">
-                    <div class="pdf-header">
-                        <img src="/logo.png" alt="Philippine Flag" style="width: 80px; float: left; margin-right: 20px;">
-                        <div style="text-align: center; padding-top: 10px;">
-                            <h2 style="color: #d4af37; margin: 0;">THE FRATERNAL ORDER OF <em>Eagles</em></h2>
-                            <h3 style="margin: 5px 0;">(Philippine <em>Eagles</em>)</h3>
-                            <p style="margin: 3px 0; font-size: 0.9em;">First Philippine-Born Socio-Civic Organization</p>
-                            <p style="margin: 3px 0; color: #d4af37; font-style: italic;"><strong>Service Through Strong Brotherhood</strong></p>
-                            <p style="margin: 3px 0; font-size: 1.1em; font-style: italic;"><strong>"ANG MALAYANG AGILA"</strong></p>
+                    <!-- Header with logos -->
+                    <div class="pdf-header-row">
+                        <img src="philippine-flag.svg" alt="Philippine Flag" style="width: 60px; height: 30px;">
+                        <div class="pdf-header-center">
+                            <h2>THE FRATERNAL ORDER OF <em>Eagles</em></h2>
+                            <h2 style="font-size: 13px;">( Philippine <em>Eagles</em> )</h2>
+                            <p style="font-size: 9px;">First Philippine-Born Socio-Civic Organization</p>
+                            <p style="color: #d4af37; font-style: italic; font-weight: bold; font-size: 10px;">Service Through Strong Brotherhood</p>
+                            <p style="font-style: italic; font-weight: bold; font-size: 11px;">"ANG MALAYANG AGILA"</p>
                         </div>
-                        <img src="/logo.png" alt="Eagles Logo" style="width: 80px; float: right; margin-left: 20px;">
-                        <div style="clear: both;"></div>
+                        <img src="logo.png" alt="Eagles Logo" style="width: 60px; height: 60px;">
                     </div>
-                    
-                    <h3 style="text-align: center; margin: 20px 0; text-decoration: underline;">APPLICATION OF MEMBERSHIP</h3>
-                    
-                    <div class="pdf-photo" style="float: right; width: 120px; height: 120px; border: 2px solid #000; margin: 0 0 10px 10px;">
+
+                    <h3 style="text-align: center; text-decoration: underline; margin: 20px 0; font-size: 14px;">APPLICATION OF MEMBERSHIP</h3>
+
+                    <!-- Photo -->
+                    <div class="pdf-photo-box">
                         <img src="${data.photoURL}" alt="Photo" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
-                    
-                    <p style="margin: 10px 0;"><strong>Date:</strong> ${data.createdAt ? new Date(data.createdAt.toDate()).toLocaleDateString() : ''}</p>
-                    
-                    <div style="clear: both; margin-top: 20px;">
-                        <p style="text-align: justify; line-height: 1.6; margin-bottom: 20px;">
-                            I hereby submit my application to your Eagles Club, subject to the criteria, qualifications, and requirements
-                            prescribed by the Eagles Magna Carta of 1989 as amended, as well as to such other requirements as shall be
-                            prescribed, from time to time, by the Philippine Eagles. It is a pre-condition to this application that I shall strictly
-                            abide by the said Constitution and By-Laws and by such other rules, regulations, and policies that may be
-                            promulgated from time to time.
-                        </p>
+
+                    <p style="font-size: 11px; margin: 15px 0;"><strong>Date:</strong> ${data.createdAt ? new Date(data.createdAt.toDate()).toLocaleDateString() : '_____________'}</p>
+
+                    <p style="text-align: justify; font-size: 10px; line-height: 1.5; margin: 15px 0;">
+                        I hereby submit my application to your Eagles Club, subject to the criteria, qualifications, and requirements prescribed by the Eagles Magna Carta of 1989 as amended, as well as to such other requirements as shall be prescribed, from time to time, by the Philippine Eagles. It is a pre-condition to this application that I shall strictly abide by the said Constitution and By-Laws and by such other rules, regulations, and policies that may be promulgated from time to time.
+                    </p>
+
+                    <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #000; padding: 8px 0; margin-top: 20px;">
+                        <div class="section-header" style="flex: 1; border: none;"><strong>Name of Eagles Club</strong></div>
+                        <div class="section-header" style="flex: 1; border: none; border-left: 2px solid #000;"><strong>Applicant's Name & Signature</strong></div>
                     </div>
-                    
-                    <table class="pdf-table" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                        <tr>
-                            <td colspan="2" style="border-bottom: 2px solid #000; padding: 10px 0; text-align: center;">
-                                <strong>Name of Eagles Club</strong>
-                            </td>
-                            <td colspan="2" style="border-bottom: 2px solid #000; padding: 10px 0; text-align: center;">
-                                <strong>Applicant's Name & Signature</strong>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="padding: 10px 0;">
-                                <strong>Name:</strong> 
-                                <span style="border-bottom: 1px solid #000; display: inline-block; min-width: 200px; padding: 2px 10px;">
-                                    ${data.lastName || ''}, ${data.firstName || ''} ${data.middleName || ''} (${data.nickname || ''})
-                                </span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="padding: 5px 0;"><strong>Present Address:</strong> ${data.presentAddress || ''}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 5px 0;"><strong>Mobile No.:</strong> ${data.mobileNo || ''}</td>
-                            <td colspan="3" style="padding: 5px 0;"><strong>Email Address:</strong> ${data.emailAddress || ''}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 5px 0;"><strong>Profession:</strong> ${data.profession || ''}</td>
-                            <td colspan="3" style="padding: 5px 0;"><strong>Line of Business:</strong> ${data.lineOfBusiness || ''}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 5px 0;"><strong>Date of Birth:</strong> ${data.dateOfBirth || ''}</td>
-                            <td style="padding: 5px 0;"><strong>Place of Birth:</strong> ${data.placeOfBirth || ''}</td>
-                            <td colspan="2" style="padding: 5px 0;"><strong>Blood Type:</strong> ${data.bloodType || ''}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="padding: 5px 0;"><strong>Hobbies & Sports:</strong> ${data.hobbies || ''}</td>
-                            <td colspan="2" style="padding: 5px 0;"><strong>Other Club Affiliations:</strong> ${data.otherClubs || ''}</td>
-                        </tr>
+
+                    <div class="pdf-table">
+                        <p style="margin: 8px 0;"><strong>Name:</strong> <span class="underline">${data.lastName || ''}, ${data.firstName || ''} ${data.middleName || ''} (${data.nickname || ''})</span></p>
+                        <p style="margin: 6px 0;"><strong>Present Address:</strong> <span class="underline" style="min-width: 500px;">${data.presentAddress || ''}</span></p>
+                        <p style="margin: 6px 0;"><strong>Mobile No.:</strong> ${data.mobileNo || ''} &nbsp;&nbsp;&nbsp; <strong>Email Address:</strong> ${data.emailAddress || ''}</p>
+                        <p style="margin: 6px 0;"><strong>Profession:</strong> ${data.profession || ''} &nbsp;&nbsp;&nbsp; <strong>Line of Business:</strong> ${data.lineOfBusiness || ''}</p>
+                        <p style="margin: 6px 0;"><strong>Date of Birth:</strong> ${data.dateOfBirth || ''} &nbsp;&nbsp;&nbsp; <strong>Place of Birth:</strong> ${data.placeOfBirth || ''} &nbsp;&nbsp;&nbsp; <strong>Blood Type:</strong> ${data.bloodType || ''}</p>
+                        <p style="margin: 6px 0;"><strong>Hobbies & Sports:</strong> ${data.hobbies || ''}</p>
+                        <p style="margin: 6px 0;"><strong>Other Club Affiliations:</strong> ${data.otherClubs || ''}</p>
+
                         ${data.wifeFirstName ? `
-                        <tr><td colspan="4" style="padding-top: 20px;"><strong>SPOUSE INFORMATION</strong></td></tr>
-                        <tr>
-                            <td colspan="4" style="padding: 5px 0;">
-                                <strong>Name of Wife:</strong> ${data.wifeLastName || ''}, ${data.wifeFirstName || ''} ${data.wifeMiddleName || ''} (${data.wifeNickname || ''})
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 5px 0;"><strong>Profession:</strong> ${data.wifeProfession || ''}</td>
-                            <td colspan="3" style="padding: 5px 0;"><strong>Mobile No.:</strong> ${data.wifeMobileNo || ''}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 5px 0;"><strong>Date of Birth:</strong> ${data.wifeDateOfBirth || ''}</td>
-                            <td style="padding: 5px 0;"><strong>Place of Birth:</strong> ${data.wifePlaceOfBirth || ''}</td>
-                            <td colspan="2" style="padding: 5px 0;"><strong>Hobbies & Sports:</strong> ${data.wifeHobbies || ''}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="padding: 5px 0;"><strong>Wedding Anniversary:</strong> ${data.weddingAnniversary || ''}</td>
-                        </tr>
+                        <p style="margin: 15px 0 6px; font-weight: bold;">SPOUSE INFORMATION</p>
+                        <p style="margin: 6px 0;"><strong>Name of Wife:</strong> <span class="underline">${data.wifeLastName || ''}, ${data.wifeFirstName || ''} ${data.wifeMiddleName || ''} (${data.wifeNickname || ''})</span></p>
+                        <p style="margin: 6px 0;"><strong>Profession:</strong> ${data.wifeProfession || ''} &nbsp;&nbsp;&nbsp; <strong>Mobile No.:</strong> ${data.wifeMobileNo || ''}</p>
+                        <p style="margin: 6px 0;"><strong>Date of Birth:</strong> ${data.wifeDateOfBirth || ''} &nbsp;&nbsp;&nbsp; <strong>Place of Birth:</strong> ${data.wifePlaceOfBirth || ''}</p>
+                        <p style="margin: 6px 0;"><strong>Hobbies & Sports:</strong> ${data.wifeHobbies || ''}</p>
+                        <p style="margin: 6px 0;"><strong>Wedding Anniversary:</strong> ${data.weddingAnniversary || ''}</p>
                         ` : ''}
-                    </table>
-                    
-                    <div style="margin-top: 30px; text-align: center;">
-                        <p><strong>SIGNATURE</strong></p>
-                        <img src="${data.signatureURL}" alt="Signature" style="max-width: 300px; border: 1px solid #ccc; background: white;">
+                    </div>
+
+                    <div style="margin-top: 40px; text-align: center;">
+                        <p style="font-weight: bold; font-size: 12px; margin-bottom: 10px;">SIGNATURE</p>
+                        <div style="border: 1px solid #000; display: inline-block; padding: 10px; background: white;">
+                            <img src="${data.signatureURL}" alt="Signature" style="max-width: 300px; max-height: 80px;">
+                        </div>
                     </div>
                 </div>
             `;
