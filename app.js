@@ -24,12 +24,12 @@ import {
 // Firebase configuration
 // IMPORTANT: Replace these with your actual Firebase project credentials
 const firebaseConfig = {
-    apiKey: "AIzaSyB1b2qUxwE6gZJd0XsfWTShrJkp1pqURMw",
-  authDomain: "amaregistration.firebaseapp.com",
-  projectId: "amaregistration",
-  storageBucket: "amaregistration.firebasestorage.app",
-  messagingSenderId: "609915541222",
-  appId: "1:609915541222:web:6c04eb592ab1d43dcf4d27"
+    apiKey: "YOUR_API_KEY_HERE",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
 };
 
 // Initialize Firebase
@@ -287,6 +287,26 @@ async function compressImage(file, maxSizeKB = 800) {
     });
 }
 
+// Convert signature canvas to base64 with WHITE background (not transparent/black)
+function getSignatureWithWhiteBackground(sourceCanvas) {
+    // Create a new canvas
+    const canvas = document.createElement('canvas');
+    canvas.width = sourceCanvas.width;
+    canvas.height = sourceCanvas.height;
+    
+    const ctx = canvas.getContext('2d');
+    
+    // Fill with WHITE background
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw the signature on top
+    ctx.drawImage(sourceCanvas, 0, 0);
+    
+    // Convert to JPEG (no transparency)
+    return canvas.toDataURL('image/jpeg', 0.8);
+}
+
 // Submit Membership Application
 async function submitMembershipApplication() {
     try {
@@ -318,9 +338,9 @@ async function submitMembershipApplication() {
         showToast('Compressing photo...', 'info');
         const photoBase64 = await compressImage(photoFile, 700);
 
-        // Convert signature to base64 (compress to 100KB)
+        // Convert signature to base64 with WHITE background (not transparent)
         const signatureCanvas = document.getElementById('signature-pad-membership');
-        const signatureBase64 = signatureCanvas.toDataURL('image/jpeg', 0.7);
+        const signatureBase64 = getSignatureWithWhiteBackground(signatureCanvas);
 
         // Prepare data
         const applicationData = {
@@ -411,9 +431,9 @@ async function submitIDApplication() {
         showToast('Compressing photo...', 'info');
         const photoBase64 = await compressImage(photoFile, 700);
 
-        // Convert signature to base64 (compress to save space)
+        // Convert signature to base64 with WHITE background
         const signatureCanvas = document.getElementById('signature-pad-id');
-        const signatureBase64 = signatureCanvas.toDataURL('image/jpeg', 0.7);
+        const signatureBase64 = getSignatureWithWhiteBackground(signatureCanvas);
 
         // Prepare data
         const applicationData = {
@@ -591,130 +611,6 @@ async function loadIDApplications() {
 
 // View application
 window.viewApplication = async function(type, id) {
-    try {
-        const collectionName = type === 'membership' ? 'membershipApplications' : 'idApplications';
-        const docRef = doc(db, collectionName, id);
-        const docSnap = await (await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js')).getDoc(docRef);
-
-        if (!docSnap.exists()) {
-            showToast('Application not found', 'error');
-            return;
-        }
-
-        const data = docSnap.data();
-        const modalBody = document.getElementById('view-modal-body');
-
-        if (type === 'membership') {
-            modalBody.innerHTML = `
-                <div class="detail-photo">
-                    <img src="${data.photoURL}" alt="Photo">
-                </div>
-                <div class="detail-grid">
-                    <div class="detail-item">
-                        <div class="detail-label">Full Name</div>
-                        <div class="detail-value">${data.firstName} ${data.middleName || ''} ${data.lastName}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Nickname</div>
-                        <div class="detail-value">${data.nickname || 'N/A'}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Email</div>
-                        <div class="detail-value">${data.emailAddress}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Mobile</div>
-                        <div class="detail-value">${data.mobileNo}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Date of Birth</div>
-                        <div class="detail-value">${data.dateOfBirth}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Place of Birth</div>
-                        <div class="detail-value">${data.placeOfBirth}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Blood Type</div>
-                        <div class="detail-value">${data.bloodType || 'N/A'}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Profession</div>
-                        <div class="detail-value">${data.profession}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Line of Business</div>
-                        <div class="detail-value">${data.lineOfBusiness || 'N/A'}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Hobbies & Sports</div>
-                        <div class="detail-value">${data.hobbies || 'N/A'}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Other Clubs</div>
-                        <div class="detail-value">${data.otherClubs || 'N/A'}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Eagles Club</div>
-                        <div class="detail-value">${data.clubName || 'N/A'}</div>
-                    </div>
-                </div>
-                <div class="detail-item" style="margin-top: 20px;">
-                    <div class="detail-label">Present Address</div>
-                    <div class="detail-value">${data.presentAddress}</div>
-                </div>
-                ${data.wifeFirstName ? `
-                    <h4 style="margin-top: 30px; margin-bottom: 15px;">Spouse Information</h4>
-                    <div class="detail-grid">
-                        <div class="detail-item">
-                            <div class="detail-label">Spouse Name</div>
-                            <div class="detail-value">${data.wifeFirstName} ${data.wifeMiddleName || ''} ${data.wifeLastName}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Profession</div>
-                            <div class="detail-value">${data.wifeProfession || 'N/A'}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Mobile</div>
-                            <div class="detail-value">${data.wifeMobileNo || 'N/A'}</div>
-                        </div>
-                        <div class="detail-item">
-                            <div class="detail-label">Wedding Anniversary</div>
-                            <div class="detail-value">${data.weddingAnniversary || 'N/A'}</div>
-                        </div>
-                    </div>
-                ` : ''}
-                <div class="detail-signature">
-                    <div class="detail-label">Signature</div>
-                    <img src="${data.signatureURL}" alt="Signature">
-                </div>
-            `;
-        } else {
-            modalBody.innerHTML = `
-                <div class="detail-photo">
-                    <img src="${data.photoURL}" alt="Photo">
-                </div>
-                <div class="detail-grid">
-                    <div class="detail-item">
-                        <div class="detail-label">Full Name</div>
-                        <div class="detail-value">${data.givenName} ${data.middleName || ''} ${data.familyName}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Club Name</div>
-                        <div class="detail-value">${data.clubName}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Date of Birth</div>
-                        <div class="detail-value">${data.dateOfBirth}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Contact Person</div>
-                        <div class="detail-value">${data.contactPerson}</div>
-                    </div>
-                    <div class="detail-item">
-                        <div class="detail-label">Contact Number</div>
-                        <div class="detail-value">${data.contactNumber}</div>
-                    </div>
                 </div>
                 <div class="detail-item" style="margin-top: 20px;">
                     <div class="detail-label">Complete Address</div>
@@ -1003,3 +899,291 @@ window.addEventListener('load', () => {
         showPage(hash);
     }
 });
+
+// Export to Excel function
+window.exportToExcel = async function(type) {
+    try {
+        showToast('Preparing Excel file...', 'info');
+        
+        const collectionName = type === 'membership' ? 'membershipApplications' : 'idApplications';
+        const q = query(collection(db, collectionName), orderBy('createdAt', 'desc'));
+        const querySnapshot = await getDocs(q);
+        
+        if (querySnapshot.empty) {
+            showToast('No data to export', 'warning');
+            return;
+        }
+        
+        const data = [];
+        querySnapshot.forEach((doc) => {
+            const d = doc.data();
+            if (type === 'membership') {
+                data.push({
+                    'Date Applied': d.createdAt ? new Date(d.createdAt.toDate()).toLocaleDateString() : '',
+                    'Last Name': d.lastName || '',
+                    'First Name': d.firstName || '',
+                    'Middle Name': d.middleName || '',
+                    'Nickname': d.nickname || '',
+                    'Email': d.emailAddress || '',
+                    'Mobile': d.mobileNo || '',
+                    'Address': d.presentAddress || '',
+                    'Date of Birth': d.dateOfBirth || '',
+                    'Place of Birth': d.placeOfBirth || '',
+                    'Blood Type': d.bloodType || '',
+                    'Profession': d.profession || '',
+                    'Line of Business': d.lineOfBusiness || '',
+                    'Hobbies & Sports': d.hobbies || '',
+                    'Other Clubs': d.otherClubs || '',
+                    'Club Name': d.clubName || '',
+                    'Wife Name': d.wifeFirstName ? `${d.wifeFirstName} ${d.wifeLastName}` : '',
+                    'Wife Profession': d.wifeProfession || '',
+                    'Wife Mobile': d.wifeMobileNo || '',
+                    'Wedding Anniversary': d.weddingAnniversary || '',
+                    'Status': d.status || 'pending'
+                });
+            } else {
+                data.push({
+                    'Date Applied': d.createdAt ? new Date(d.createdAt.toDate()).toLocaleDateString() : '',
+                    'Club Name': d.clubName || '',
+                    'Given Name': d.givenName || '',
+                    'Middle Name': d.middleName || '',
+                    'Family Name': d.familyName || '',
+                    'Complete Address': d.completeAddress || '',
+                    'Date of Birth': d.dateOfBirth || '',
+                    'Contact Person': d.contactPerson || '',
+                    'Contact Number': d.contactNumber || '',
+                    'Status': d.status || 'pending'
+                });
+            }
+        });
+        
+        // Create workbook
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, type === 'membership' ? 'Membership' : 'ID Applications');
+        
+        // Generate filename with date
+        const filename = `Eagles_${type}_Applications_${new Date().toISOString().split('T')[0]}.xlsx`;
+        
+        // Download
+        XLSX.writeFile(wb, filename);
+        
+        showToast('Excel file downloaded successfully!', 'success');
+        
+    } catch (error) {
+        console.error('Error exporting to Excel:', error);
+        showToast('Error exporting to Excel', 'error');
+    }
+};
+
+// View application in formatted PDF-style layout
+async function showFormattedView(type, id) {
+    try {
+        const collectionName = type === 'membership' ? 'membershipApplications' : 'idApplications';
+        const docRef = doc(db, collectionName, id);
+        const docModule = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+        const docSnap = await docModule.getDoc(docRef);
+
+        if (!docSnap.exists()) {
+            showToast('Application not found', 'error');
+            return;
+        }
+
+        const data = docSnap.data();
+        const modalBody = document.getElementById('view-modal-body');
+
+        if (type === 'membership') {
+            modalBody.innerHTML = `
+                <div class="pdf-view">
+                    <div class="pdf-header">
+                        <img src="/logo.png" alt="Philippine Flag" style="width: 80px; float: left; margin-right: 20px;">
+                        <div style="text-align: center; padding-top: 10px;">
+                            <h2 style="color: #d4af37; margin: 0;">THE FRATERNAL ORDER OF <em>Eagles</em></h2>
+                            <h3 style="margin: 5px 0;">(Philippine <em>Eagles</em>)</h3>
+                            <p style="margin: 3px 0; font-size: 0.9em;">First Philippine-Born Socio-Civic Organization</p>
+                            <p style="margin: 3px 0; color: #d4af37; font-style: italic;"><strong>Service Through Strong Brotherhood</strong></p>
+                            <p style="margin: 3px 0; font-size: 1.1em; font-style: italic;"><strong>"ANG MALAYANG AGILA"</strong></p>
+                        </div>
+                        <img src="/logo.png" alt="Eagles Logo" style="width: 80px; float: right; margin-left: 20px;">
+                        <div style="clear: both;"></div>
+                    </div>
+                    
+                    <h3 style="text-align: center; margin: 20px 0; text-decoration: underline;">APPLICATION OF MEMBERSHIP</h3>
+                    
+                    <div class="pdf-photo" style="float: right; width: 120px; height: 120px; border: 2px solid #000; margin: 0 0 10px 10px;">
+                        <img src="${data.photoURL}" alt="Photo" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    
+                    <p style="margin: 10px 0;"><strong>Date:</strong> ${data.createdAt ? new Date(data.createdAt.toDate()).toLocaleDateString() : ''}</p>
+                    
+                    <div style="clear: both; margin-top: 20px;">
+                        <p style="text-align: justify; line-height: 1.6; margin-bottom: 20px;">
+                            I hereby submit my application to your Eagles Club, subject to the criteria, qualifications, and requirements
+                            prescribed by the Eagles Magna Carta of 1989 as amended, as well as to such other requirements as shall be
+                            prescribed, from time to time, by the Philippine Eagles. It is a pre-condition to this application that I shall strictly
+                            abide by the said Constitution and By-Laws and by such other rules, regulations, and policies that may be
+                            promulgated from time to time.
+                        </p>
+                    </div>
+                    
+                    <table class="pdf-table" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                        <tr>
+                            <td colspan="2" style="border-bottom: 2px solid #000; padding: 10px 0; text-align: center;">
+                                <strong>Name of Eagles Club</strong>
+                            </td>
+                            <td colspan="2" style="border-bottom: 2px solid #000; padding: 10px 0; text-align: center;">
+                                <strong>Applicant's Name & Signature</strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="padding: 10px 0;">
+                                <strong>Name:</strong> 
+                                <span style="border-bottom: 1px solid #000; display: inline-block; min-width: 200px; padding: 2px 10px;">
+                                    ${data.lastName || ''}, ${data.firstName || ''} ${data.middleName || ''} (${data.nickname || ''})
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="padding: 5px 0;"><strong>Present Address:</strong> ${data.presentAddress || ''}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px 0;"><strong>Mobile No.:</strong> ${data.mobileNo || ''}</td>
+                            <td colspan="3" style="padding: 5px 0;"><strong>Email Address:</strong> ${data.emailAddress || ''}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px 0;"><strong>Profession:</strong> ${data.profession || ''}</td>
+                            <td colspan="3" style="padding: 5px 0;"><strong>Line of Business:</strong> ${data.lineOfBusiness || ''}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px 0;"><strong>Date of Birth:</strong> ${data.dateOfBirth || ''}</td>
+                            <td style="padding: 5px 0;"><strong>Place of Birth:</strong> ${data.placeOfBirth || ''}</td>
+                            <td colspan="2" style="padding: 5px 0;"><strong>Blood Type:</strong> ${data.bloodType || ''}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="padding: 5px 0;"><strong>Hobbies & Sports:</strong> ${data.hobbies || ''}</td>
+                            <td colspan="2" style="padding: 5px 0;"><strong>Other Club Affiliations:</strong> ${data.otherClubs || ''}</td>
+                        </tr>
+                        ${data.wifeFirstName ? `
+                        <tr><td colspan="4" style="padding-top: 20px;"><strong>SPOUSE INFORMATION</strong></td></tr>
+                        <tr>
+                            <td colspan="4" style="padding: 5px 0;">
+                                <strong>Name of Wife:</strong> ${data.wifeLastName || ''}, ${data.wifeFirstName || ''} ${data.wifeMiddleName || ''} (${data.wifeNickname || ''})
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px 0;"><strong>Profession:</strong> ${data.wifeProfession || ''}</td>
+                            <td colspan="3" style="padding: 5px 0;"><strong>Mobile No.:</strong> ${data.wifeMobileNo || ''}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px 0;"><strong>Date of Birth:</strong> ${data.wifeDateOfBirth || ''}</td>
+                            <td style="padding: 5px 0;"><strong>Place of Birth:</strong> ${data.wifePlaceOfBirth || ''}</td>
+                            <td colspan="2" style="padding: 5px 0;"><strong>Hobbies & Sports:</strong> ${data.wifeHobbies || ''}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="padding: 5px 0;"><strong>Wedding Anniversary:</strong> ${data.weddingAnniversary || ''}</td>
+                        </tr>
+                        ` : ''}
+                    </table>
+                    
+                    <div style="margin-top: 30px; text-align: center;">
+                        <p><strong>SIGNATURE</strong></p>
+                        <img src="${data.signatureURL}" alt="Signature" style="max-width: 300px; border: 1px solid #ccc; background: white;">
+                    </div>
+                </div>
+            `;
+        } else {
+            // ID APPLICATION FORMAT
+            modalBody.innerHTML = `
+                <div class="pdf-view">
+                    <div class="pdf-header">
+                        <img src="/logo.png" alt="Philippine Flag" style="width: 80px; float: left; margin-right: 20px;">
+                        <div style="text-align: center; padding-top: 10px;">
+                            <h2 style="color: #d4af37; margin: 0;">THE FRATERNAL ORDER OF <em>Eagles</em></h2>
+                            <h3 style="margin: 5px 0;">(Philippine <em>Eagles</em>)</h3>
+                            <p style="margin: 3px 0; font-size: 0.9em;">First Philippine-Born Socio-Civic Organization</p>
+                            <p style="margin: 3px 0; color: #d4af37; font-style: italic;"><strong>Service Through Strong Brotherhood</strong></p>
+                            <p style="margin: 3px 0; font-size: 1.1em; font-style: italic;"><strong>"ANG MALAYANG AGILA"</strong></p>
+                        </div>
+                        <img src="/logo.png" alt="Eagles Logo" style="width: 80px; float: right; margin-left: 20px;">
+                        <div style="clear: both;"></div>
+                    </div>
+                    
+                    <hr style="border: 1px dashed #000; margin: 20px 0;">
+                    
+                    <h3 style="text-align: center; margin: 20px 0;">APPLICATION FOR IDENTIFICATION CARD</h3>
+                    
+                    <div class="pdf-photo" style="float: right; width: 120px; height: 120px; border: 2px solid #000; margin: 0 0 10px 10px;">
+                        <img src="${data.photoURL}" alt="2x2 picture" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    
+                    <table class="pdf-table" style="width: 100%; border: 2px solid #000; border-collapse: collapse; margin-top: 20px;">
+                        <tr>
+                            <td colspan="2" style="border: 1px solid #000; padding: 10px; text-align: center; background: #f0f0f0;">
+                                <strong>Name of Club</strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="border: 1px solid #000; padding: 10px; text-align: center;">
+                                ${data.clubName || ''}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="border: 1px solid #000; padding: 10px; text-align: center; background: #f0f0f0;">
+                                <strong>ID Number</strong> (to be filled up by the Nat'l Secretariat)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 10px;"><strong>Given Name</strong></td>
+                            <td style="border: 1px solid #000; padding: 10px;">${data.givenName || ''}</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 10px;"><strong>Middle Name</strong></td>
+                            <td style="border: 1px solid #000; padding: 10px;">${data.middleName || ''}</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 10px;"><strong>Family Name</strong></td>
+                            <td style="border: 1px solid #000; padding: 10px;">${data.familyName || ''}</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 10px;"><strong>Complete Address</strong></td>
+                            <td style="border: 1px solid #000; padding: 10px;">${data.completeAddress || ''}</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 10px;"><strong>Date of Birth</strong></td>
+                            <td style="border: 1px solid #000; padding: 10px;">${data.dateOfBirth || ''}</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 10px;"><strong>Contact Person</strong><br>(in case of emergency)</td>
+                            <td style="border: 1px solid #000; padding: 10px;">${data.contactPerson || ''}</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 10px;"><strong>Contact Number</strong></td>
+                            <td style="border: 1px solid #000; padding: 10px;">${data.contactNumber || ''}</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 10px;"><strong>Member's Signature</strong><br>(Please sign inside the box)</td>
+                            <td style="border: 1px solid #000; padding: 10px; height: 150px; vertical-align: middle; text-align: center;">
+                                <img src="${data.signatureURL}" alt="Signature" style="max-width: 250px; max-height: 130px; background: white;">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            `;
+        }
+
+        // Add print and download PDF buttons
+        modalBody.innerHTML += `
+            <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 2px solid #ddd;">
+                <button class="btn btn-primary" onclick="window.print()">🖨️ Print</button>
+                <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+            </div>
+        `;
+
+        document.getElementById('modal-overlay').classList.add('active');
+        document.getElementById('view-modal').classList.add('active');
+
+    } catch (error) {
+        console.error('Error viewing application:', error);
+        showToast('Error viewing application', 'error');
+    }
+}
